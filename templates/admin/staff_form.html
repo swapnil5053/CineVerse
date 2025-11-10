@@ -1,0 +1,37 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">{{ 'Edit' if item else 'Add' }} Staff</h2>
+<form method="post" class="row g-3">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="col-md-6">
+    <label class="form-label">Theatre</label>
+    <select name="theatre_id" class="form-select" required>
+      <option value="">Select...</option>
+      {% for t in theatres %}
+        {% set sel = item and item.theatre_id == t.theatre_id %}
+        <option value="{{ t.theatre_id }}" {{ 'selected' if sel else '' }}>{{ t.city }} — {{ t.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Name</label>
+    <input type="text" name="name" class="form-control" value="{{ item.name if item else '' }}" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Role</label>
+    <input type="text" name="role" class="form-control" value="{{ item.role if item else '' }}" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Contact No</label>
+    <input type="text" name="contact_no" class="form-control" value="{{ item.contact_no if item else '' }}">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Salary</label>
+    <input type="number" step="0.01" name="salary" class="form-control" value="{{ item.salary if item else '' }}" min="0" required>
+  </div>
+  <div class="col-12 d-flex gap-2">
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('staff_admin.staff_list') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

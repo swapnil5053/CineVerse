@@ -1,0 +1,40 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">My Bookings</h2>
+{% if items %}
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Booking ID</th>
+          <th>Date</th>
+          <th>Movie</th>
+          <th>Theatre</th>
+          <th>Screen</th>
+          <th>Show</th>
+          <th>Seats</th>
+          <th>Total</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for b in items %}
+        <tr>
+          <td>{{ b.booking_id }}</td>
+          <td>{{ b.booking_time }}</td>
+          <td>{{ b.movie_title }}</td>
+          <td>{{ b.theatre_name }}</td>
+          <td>{{ b.screen_name }}</td>
+          <td>{{ b.show_date }} {{ b.show_time }}</td>
+          <td>{{ b.seats_booked }}</td>
+          <td>₹ {{ '%.2f'|format(b.total_amount) }}</td>
+          <td>{{ b.status }}</td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-info">No bookings yet.</div>
+{% endif %}
+{% endblock %}

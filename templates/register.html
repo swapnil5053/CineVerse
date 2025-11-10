@@ -1,0 +1,35 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">Register</h2>
+<div class="row justify-content-center">
+  <div class="col-md-8 col-lg-6">
+    <div class="card">
+      <div class="card-body">
+        <form method="post" action="{{ url_for('auth.register_post') }}" class="row g-3">
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+          <div class="col-12">
+            <label class="form-label">Name</label>
+            <input type="text" name="name" class="form-control" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Email</label>
+            <input type="email" name="email" class="form-control" required>
+          </div>
+          <div class="col-12">
+            <label class="form-label">Contact No</label>
+            <input type="text" name="contact_no" class="form-control">
+          </div>
+          <div class="col-12">
+            <label class="form-label">Password</label>
+            <input type="password" name="password" class="form-control" required>
+          </div>
+          <div class="col-12 d-flex gap-2">
+            <button class="btn btn-success" type="submit">Create Account</button>
+            <a href="{{ url_for('auth.login_get') }}" class="btn btn-outline-secondary">Have an account? Login</a>
+          </div>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

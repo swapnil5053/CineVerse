@@ -1,0 +1,27 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">{{ 'Edit' if item else 'Add' }} Theatre</h2>
+<form method="post" class="row g-3">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="col-md-6">
+    <label class="form-label">Name</label>
+    <input type="text" name="name" class="form-control" value="{{ item.name if item else '' }}" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">City</label>
+    <input type="text" name="city" class="form-control" value="{{ item.city if item else '' }}" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Contact No</label>
+    <input type="text" name="contact_no" class="form-control" value="{{ item.contact_no if item else '' }}">
+  </div>
+  <div class="col-md-12">
+    <label class="form-label">Address</label>
+    <textarea name="address" class="form-control" rows="3" required>{{ item.address if item else '' }}</textarea>
+  </div>
+  <div class="col-12 d-flex gap-2">
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('theatres_admin.theatres_list') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

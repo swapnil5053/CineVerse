@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">Manage Shows</h2>
+<div class="mb-3"><a class="btn btn-success" href="{{ url_for('shows_admin.shows_add_get') }}">Add Show</a></div>
+{% if items %}
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Date</th>
+          <th>Time</th>
+          <th>Movie</th>
+          <th>Theatre</th>
+          <th>Screen</th>
+          <th>Price Type</th>
+          <th>Base Price</th>
+          <th>Available</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in items %}
+          <tr>
+            <td>{{ s.show_date }}</td>
+            <td>{{ s.show_time }}</td>
+            <td>{{ s.movie_title }}</td>
+            <td>{{ s.theatre_name }} ({{ s.city }})</td>
+            <td>{{ s.screen_name }}</td>
+            <td>{{ s.price_type }}</td>
+            <td>₹ {{ '%.2f'|format(s.base_price) }}</td>
+            <td>{{ s.available_seats }}</td>
+            <td class="text-nowrap">
+              <a class="btn btn-sm btn-primary" href="{{ url_for('shows_admin.shows_edit_get', show_id=s.show_id) }}">Edit</a>
+              <form class="d-inline" method="post" action="{{ url_for('shows_admin.shows_delete', show_id=s.show_id) }}" onsubmit="return confirm('Delete this show?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-info">No shows found.</div>
+{% endif %}
+{% endblock %}

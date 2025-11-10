@@ -1,0 +1,81 @@
+%% Mermaid Relational Schema (PK/FK mapping)
+
+erDiagram
+    THEATRE ||--o{ SCREEN : theatre_id
+    SCREEN ||--o{ SHOWTIME : screen_id
+    MOVIE ||--o{ SHOWTIME : movie_id
+    CUSTOMER ||--o{ BOOKING : cust_id
+    SHOWTIME ||--o{ BOOKING : show_id
+    SCREEN ||--o{ SCREEN_RESOURCE : screen_id
+
+    THEATRE {
+      int theatre_id PK
+      string name
+      string city
+      string contact_no
+      string address
+      UNIQUE name_city
+    }
+    SCREEN {
+      int screen_id PK
+      int theatre_id FK -> THEATRE.theatre_id
+      string name
+      enum type
+      int capacity
+      enum status
+      UNIQUE theatre_name
+    }
+    MOVIE {
+      int movie_id PK
+      string title (FULLTEXT)
+      int duration_minutes
+      string genre
+      string language
+      decimal rating
+      date release_date
+      enum status (idx status)
+    }
+    CUSTOMER {
+      int cust_id PK
+      string name
+      string email UNIQUE
+      string contact_no
+      enum membership_status
+      string password_hash
+    }
+    STAFF {
+      int staff_id PK
+      int theatre_id FK -> THEATRE.theatre_id
+      string name
+      string role
+      string contact_no
+      decimal salary
+    }
+    SHOWTIME {
+      int show_id PK
+      int screen_id FK -> SCREEN.screen_id (idx)
+      int movie_id FK -> MOVIE.movie_id (idx)
+      date show_date (idx with show_time)
+      time show_time
+      enum price_type
+      decimal base_price
+      int available_seats (idx)
+      UNIQUE screen_date_time
+    }
+    BOOKING {
+      int booking_id PK
+      int cust_id FK -> CUSTOMER.cust_id (idx)
+      int show_id FK -> SHOWTIME.show_id (idx)
+      datetime booking_time (idx)
+      int seats_booked
+      decimal total_amount
+      enum payment_method
+      enum status
+    }
+    SCREEN_RESOURCE {
+      int resource_id PK
+      int screen_id FK -> SCREEN.screen_id (idx)
+      string type
+      int quantity
+      enum status
+    }

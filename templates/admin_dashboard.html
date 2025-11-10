@@ -1,0 +1,91 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-4">Admin Dashboard</h2>
+
+<div class="row g-3 mb-4">
+  <div class="col-md-4">
+    <div class="card text-bg-light">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-uppercase small text-muted">Revenue (30 days)</div>
+            <div class="h4 mb-0">₹ {{ '%.2f'|format(kpis.total_revenue_30) }}</div>
+          </div>
+          <div class="display-6">₹</div>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="col-md-4">
+    <div class="card text-bg-light">
+      <div class="card-body">
+        <div class="d-flex justify-content-between align-items-center">
+          <div>
+            <div class="text-uppercase small text-muted">Bookings (30 days)</div>
+            <div class="h4 mb-0">{{ kpis.bookings_count_30 }}</div>
+          </div>
+          <div class="display-6">🎟️</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="row g-4">
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header">Revenue by Theatre</div>
+      <div class="card-body">
+        <canvas id="revByTheatre"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-lg-6">
+    <div class="card">
+      <div class="card-header">Top Movies by Revenue</div>
+      <div class="card-body">
+        <canvas id="topMovies"></canvas>
+      </div>
+    </div>
+  </div>
+  <div class="col-12">
+    <div class="card">
+      <div class="card-header">Upcoming Shows Occupancy %</div>
+      <div class="card-body">
+        <canvas id="occupancy"></canvas>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<script>
+(async function(){
+  async function fetchJSON(url){
+    const res = await fetch(url);
+    return res.json();
+  }
+  const rev = await fetchJSON('/admin/charts/revenue_by_theatre');
+  const top = await fetchJSON('/admin/charts/top_movies');
+  const occ = await fetchJSON('/admin/charts/occupancy');
+
+  new Chart(document.getElementById('revByTheatre'), {
+    type: 'bar',
+    data: { labels: rev.labels, datasets: [{ label: 'Revenue', data: rev.data, backgroundColor: '#0d6efd' }] },
+    options: { scales: { y: { beginAtZero: true } } }
+  });
+
+  new Chart(document.getElementById('topMovies'), {
+    type: 'bar',
+    data: { labels: top.labels, datasets: [{ label: 'Revenue', data: top.data, backgroundColor: '#20c997' }] },
+    options: { scales: { y: { beginAtZero: true } } }
+  });
+
+  new Chart(document.getElementById('occupancy'), {
+    type: 'line',
+    data: { labels: occ.labels, datasets: [{ label: 'Occupancy %', data: occ.data, borderColor: '#6610f2' }] },
+    options: { scales: { y: { beginAtZero: true, max: 100 } } }
+  });
+})();
+</script>
+{% endblock %}

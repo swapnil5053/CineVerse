@@ -1,0 +1,47 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">{{ 'Edit' if item else 'Add' }} Screen</h2>
+<form method="post" class="row g-3">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="col-md-6">
+    <label class="form-label">Theatre</label>
+    <select name="theatre_id" class="form-select" required>
+      <option value="">Select...</option>
+      {% for t in theatres %}
+        {% set sel = (item and item.theatre_id == t.theatre_id) %}
+        <option value="{{ t.theatre_id }}" {{ 'selected' if sel else '' }}>{{ t.city }} — {{ t.theatre_name or t.name }}</option>
+      {% endfor %}
+    </select>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Name</label>
+    <input type="text" name="name" class="form-control" value="{{ item.name if item else '' }}" required>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Type</label>
+    {% set tp = item.type if item else 'standard' %}
+    <select name="type" class="form-select">
+      <option value="standard" {{ 'selected' if tp=='standard' else '' }}>Standard</option>
+      <option value="imax" {{ 'selected' if tp=='imax' else '' }}>IMAX</option>
+      <option value="dolby" {{ 'selected' if tp=='dolby' else '' }}>Dolby</option>
+      <option value="3d" {{ 'selected' if tp=='3d' else '' }}>3D</option>
+    </select>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Capacity</label>
+    <input type="number" name="capacity" class="form-control" value="{{ item.capacity if item else '' }}" min="1" required>
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Status</label>
+    {% set st = item.status if item else 'active' %}
+    <select name="status" class="form-select">
+      <option value="active" {{ 'selected' if st=='active' else '' }}>Active</option>
+      <option value="inactive" {{ 'selected' if st=='inactive' else '' }}>Inactive</option>
+    </select>
+  </div>
+  <div class="col-12 d-flex gap-2">
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('screens_admin.screens_list') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

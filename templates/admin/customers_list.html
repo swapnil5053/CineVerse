@@ -1,0 +1,42 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">Manage Customers</h2>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-8">
+    <input type="text" class="form-control" name="q" placeholder="Search name or email" value="{{ q }}">
+  </div>
+  <div class="col-md-4 d-grid">
+    <button class="btn btn-primary" type="submit">Search</button>
+  </div>
+</form>
+{% if items %}
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Email</th>
+          <th>Contact</th>
+          <th>Membership</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for c in items %}
+          <tr>
+            <td>{{ c.name }}</td>
+            <td>{{ c.email }}</td>
+            <td>{{ c.contact_no or '-' }}</td>
+            <td>{{ c.membership_status }}</td>
+            <td class="text-nowrap">
+              <a class="btn btn-sm btn-primary" href="{{ url_for('customers_admin.customers_edit_get', cust_id=c.cust_id) }}">Edit</a>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-info">No customers found.</div>
+{% endif %}
+{% endblock %}

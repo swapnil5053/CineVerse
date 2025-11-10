@@ -1,0 +1,44 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">{{ 'Edit' if item else 'Add' }} Movie</h2>
+<form method="post" class="row g-3">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="col-md-6">
+    <label class="form-label">Title</label>
+    <input type="text" name="title" class="form-control" value="{{ item.title if item else '' }}" required>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Duration (min)</label>
+    <input type="number" name="duration_minutes" class="form-control" value="{{ item.duration_minutes if item else '' }}" min="1" required>
+  </div>
+  <div class="col-md-3">
+    <label class="form-label">Rating</label>
+    <input type="number" step="0.1" name="rating" class="form-control" value="{{ item.rating if item else '' }}">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Genre</label>
+    <input type="text" name="genre" class="form-control" value="{{ item.genre if item else '' }}">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Language</label>
+    <input type="text" name="language" class="form-control" value="{{ item.language if item else '' }}">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Release Date</label>
+    <input type="date" name="release_date" class="form-control" value="{{ item.release_date if item else '' }}">
+  </div>
+  <div class="col-md-4">
+    <label class="form-label">Status</label>
+    <select name="status" class="form-select">
+      {% set st = item.status if item else 'now_showing' %}
+      <option value="now_showing" {{ 'selected' if st == 'now_showing' else '' }}>Now Showing</option>
+      <option value="upcoming" {{ 'selected' if st == 'upcoming' else '' }}>Upcoming</option>
+      <option value="archived" {{ 'selected' if st == 'archived' else '' }}>Archived</option>
+    </select>
+  </div>
+  <div class="col-12 d-flex gap-2">
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('movies_admin.movies_list') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}

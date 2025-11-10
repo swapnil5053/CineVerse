@@ -1,0 +1,79 @@
+%% Mermaid ER diagram for Theatre Management System
+%% Export to PNG/PDF using Mermaid tools or VS Code extension
+
+erDiagram
+    THEATRE ||--o{ SCREEN : has
+    SCREEN ||--o{ SHOWTIME : schedules
+    MOVIE ||--o{ SHOWTIME : plays
+    CUSTOMER ||--o{ BOOKING : makes
+    SHOWTIME ||--o{ BOOKING : contains
+    SCREEN ||--o{ SCREEN_RESOURCE : uses
+
+    THEATRE {
+      int theatre_id PK
+      string name
+      string city
+      string contact_no
+      string address
+    }
+    SCREEN {
+      int screen_id PK
+      int theatre_id FK
+      string name
+      enum type
+      int capacity
+      enum status
+    }
+    MOVIE {
+      int movie_id PK
+      string title
+      int duration_minutes
+      string genre
+      string language
+      decimal rating
+      date release_date
+      enum status
+    }
+    CUSTOMER {
+      int cust_id PK
+      string name
+      string email
+      string contact_no
+      enum membership_status
+      string password_hash
+    }
+    STAFF {
+      int staff_id PK
+      int theatre_id FK
+      string name
+      string role
+      string contact_no
+      decimal salary
+    }
+    SHOWTIME {
+      int show_id PK
+      int screen_id FK
+      int movie_id FK
+      date show_date
+      time show_time
+      enum price_type
+      decimal base_price
+      int available_seats
+    }
+    BOOKING {
+      int booking_id PK
+      int cust_id FK
+      int show_id FK
+      datetime booking_time
+      int seats_booked
+      decimal total_amount
+      enum payment_method
+      enum status
+    }
+    SCREEN_RESOURCE {
+      int resource_id PK
+      int screen_id FK
+      string type
+      int quantity
+      enum status
+    }

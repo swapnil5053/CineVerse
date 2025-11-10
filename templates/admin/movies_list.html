@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">Manage Movies</h2>
+<form class="row g-2 mb-3" method="get">
+  <div class="col-md-8">
+    <input type="text" class="form-control" name="q" placeholder="Search by title" value="{{ q }}">
+  </div>
+  <div class="col-md-4 d-grid">
+    <a class="btn btn-success" href="{{ url_for('movies_admin.movies_add_get') }}">Add Movie</a>
+  </div>
+</form>
+
+{% if items %}
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Title</th>
+          <th>Duration</th>
+          <th>Genre</th>
+          <th>Language</th>
+          <th>Rating</th>
+          <th>Release</th>
+          <th>Status</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for m in items %}
+        <tr>
+          <td>{{ m.title }}</td>
+          <td>{{ m.duration_minutes }} min</td>
+          <td>{{ m.genre or '-' }}</td>
+          <td>{{ m.language or '-' }}</td>
+          <td>{{ m.rating or '-' }}</td>
+          <td>{{ m.release_date or '-' }}</td>
+          <td>{{ m.status }}</td>
+          <td class="text-nowrap">
+            <a class="btn btn-sm btn-primary" href="{{ url_for('movies_admin.movies_edit_get', movie_id=m.movie_id) }}">Edit</a>
+            <form class="d-inline" method="post" action="{{ url_for('movies_admin.movies_delete', movie_id=m.movie_id) }}" onsubmit="return confirm('Delete this movie?')">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+              <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+            </form>
+          </td>
+        </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-info">No movies found.</div>
+{% endif %}
+{% endblock %}

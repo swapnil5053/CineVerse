@@ -1,0 +1,142 @@
+{% extends 'base.html' %}
+{% block title %}SQL Demos{% endblock %}
+{% block content %}
+<div class="container py-4">
+  <h1 class="mb-4">Admin · SQL Demos</h1>
+
+  <div class="row g-4">
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header">Join Query</div>
+        <div class="card-body">
+          <form method="get" action="{{ url_for('sql_demos.join_query') }}" class="row g-2 align-items-end">
+            <div class="col-8">
+              <label class="form-label">City</label>
+              <input type="text" name="city" value="{{ join_city or 'Bengaluru' }}" class="form-control" />
+            </div>
+            <div class="col-4">
+              <button class="btn btn-primary w-100" type="submit">Run</button>
+            </div>
+          </form>
+          {% if join_rows is defined %}
+          <div class="table-responsive mt-3">
+            <table class="table table-sm table-striped">
+              <thead><tr><th>ID</th><th>Theatre</th><th>Screen</th><th>Movie</th><th>Date</th><th>Time</th><th>Price</th><th>Avail</th></tr></thead>
+              <tbody>
+                {% for r in join_rows %}
+                <tr>
+                  <td>{{ r.show_id }}</td>
+                  <td>{{ r.theatre }} ({{ r.city }})</td>
+                  <td>{{ r.screen }}</td>
+                  <td>{{ r.movie }}</td>
+                  <td>{{ r.show_date }}</td>
+                  <td>{{ r.show_time }}</td>
+                  <td>{{ '%.2f'|format(r.base_price) }}</td>
+                  <td>{{ r.available_seats }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header">Aggregate Query</div>
+        <div class="card-body">
+          <form method="get" action="{{ url_for('sql_demos.aggregate_query') }}" class="row g-2 align-items-end">
+            <div class="col-5">
+              <label class="form-label">Start (YYYY-MM-DD)</label>
+              <input type="date" name="start" value="{{ agg_start or '' }}" class="form-control" />
+            </div>
+            <div class="col-5">
+              <label class="form-label">End (YYYY-MM-DD)</label>
+              <input type="date" name="end" value="{{ agg_end or '' }}" class="form-control" />
+            </div>
+            <div class="col-2">
+              <button class="btn btn-primary w-100" type="submit">Run</button>
+            </div>
+          </form>
+          {% if agg_rows is defined %}
+          <div class="table-responsive mt-3">
+            <table class="table table-sm table-striped">
+              <thead><tr><th>Day</th><th>Revenue</th><th>Confirmed</th></tr></thead>
+              <tbody>
+                {% for r in agg_rows %}
+                <tr>
+                  <td>{{ r.day }}</td>
+                  <td>{{ '%.2f'|format(r.revenue or 0) }}</td>
+                  <td>{{ r.confirmed_count }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header">Nested Query</div>
+        <div class="card-body">
+          <a class="btn btn-primary" href="{{ url_for('sql_demos.nested_query') }}">Run</a>
+          {% if nested_rows is defined %}
+          <div class="table-responsive mt-3">
+            <table class="table table-sm table-striped">
+              <thead><tr><th>Cust ID</th><th>Name</th><th>Email</th></tr></thead>
+              <tbody>
+                {% for r in nested_rows %}
+                <tr>
+                  <td>{{ r.cust_id }}</td>
+                  <td>{{ r.name }}</td>
+                  <td>{{ r.email }}</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+
+    <div class="col-md-6">
+      <div class="card h-100">
+        <div class="card-header">Function & Procedure</div>
+        <div class="card-body">
+          <form method="get" action="{{ url_for('sql_demos.function_demo') }}" class="row g-2 align-items-end mb-3">
+            <div class="col-8">
+              <label class="form-label">Show ID</label>
+              <input type="number" name="show_id" value="{{ fn_show_id or '' }}" class="form-control" />
+            </div>
+            <div class="col-4"><button class="btn btn-secondary w-100" type="submit">fn_show_revenue</button></div>
+          </form>
+          {% if fn_result is defined %}
+          <div class="alert alert-info">Revenue for show {{ fn_show_id }}: ₹ {{ '%.2f'|format(fn_result or 0) }}</div>
+          {% endif %}
+
+          <form method="get" action="{{ url_for('sql_demos.procedure_demo') }}" class="row g-2 align-items-end">
+            <div class="col-4">
+              <label class="form-label">Start</label>
+              <input type="date" name="start" value="{{ sp_start or '' }}" class="form-control" />
+            </div>
+            <div class="col-4">
+              <label class="form-label">End</label>
+              <input type="date" name="end" value="{{ sp_end or '' }}" class="form-control" />
+            </div>
+            <div class="col-4"><button class="btn btn-secondary w-100" type="submit">sp_get_total_revenue</button></div>
+          </form>
+          {% if sp_result is defined %}
+          <div class="alert alert-info mt-3">Total revenue: ₹ {{ '%.2f'|format(sp_result or 0) }}</div>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

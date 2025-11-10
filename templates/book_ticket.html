@@ -1,0 +1,121 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">Book Tickets</h2>
+<div class="card">
+  <div class="card-body">
+    <p class="mb-1"><strong>Movie:</strong> {{ show.movie_title }}</p>
+    <p class="mb-1"><strong>Theatre:</strong> {{ show.theatre_name }} | <strong>Screen:</strong> {{ show.screen_name }}</p>
+    <p class="mb-1"><strong>Date:</strong> {{ show.show_date }} | <strong>Time:</strong> {{ show.show_time }}</p>
+    <p class="mb-3"><strong>Base Price:</strong> ₹ {{ '%.2f'|format(show.base_price) }} | <strong>Available:</strong> {{ show.available_seats }} / {{ show.capacity }}</p>
+
+    <form method="post" action="{{ url_for('booking.book_ticket_post') }}" class="row g-3">
+      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+      <input type="hidden" name="show_id" value="{{ show.show_id }}">
+      <div class="col-12">
+        <label class="form-label">Select seats (visual)</label>
+        <div id="seatGrid" class="d-flex flex-wrap gap-2" style="max-width:680px"></div>
+        <small class="text-muted d-block mt-1">This visualization is illustrative. Actual booking reserves a seat count, not specific seat numbers.</small>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Seats</label>
+        <input id="seatsInput" type="number" class="form-control" name="seats" min="1" max="{{ show.available_seats }}" required>
+      </div>
+      <div class="col-md-4">
+        <label class="form-label">Payment Method</label>
+        <select class="form-select" name="payment_method" required>
+          <option value="upi">UPI</option>
+          <option value="card">Card</option>
+          <option value="netbanking">Net Banking</option>
+          <option value="cash">Cash</option>
+        </select>
+      </div>
+      <div class="col-12">
+        <button type="submit" class="btn btn-success">Confirm Booking</button>
+        <a href="{{ url_for('shows.list_shows') }}" class="btn btn-outline-secondary">Back to Shows</a>
+      </div>
+    </form>
+  </div>
+</div>
+
+<script>
+  (function(){
+    const capacity = Number({{ show.capacity|int }});
+    const available = Number({{ show.available_seats|int }});
+    const seatGrid = document.getElementById('seatGrid');
+    const seatsInput = document.getElementById('seatsInput');
+    const cols = 12; // simple grid columns
+    const total = Math.min(capacity, 240); // cap render for performance
+
+    // initialize selection count
+    let selected = 0;
+    seatsInput.value = '';
+
+    function updateSelection(delta){
+      selected = Math.max(0, Math.min(available, selected + delta));
+      seatsInput.value = selected || '';
+    }
+
+    // Build a simple visual grid: green = available, gray = taken (simulated), blue = selected
+    for (let i = 0; i < total; i++){
+      const btn = document.createElement('button');
+      btn.type = 'button';
+      btn.className = 'seat btn btn-sm';
+      btn.style.width = '40px';
+      btn.style.height = '36px';
+      btn.style.borderRadius = '6px';
+      btn.style.border = '1px solid var(--bs-border-color)';
+      btn.style.background = '#e9f7ef'; // available
+      btn.textContent = (i+1);
+
+      // simulate occupied seats: mark last (capacity - available) as taken
+      const occupiedThreshold = capacity - available;
+      const isOccupied = i >= (total - Math.min(occupiedThreshold, total));
+      if (isOccupied){
+        btn.disabled = true;
+        btn.style.background = '#f1f3f5';
+        btn.style.color = '#999';
+      } else {
+        btn.addEventListener('click', () => {
+          if (btn.dataset.sel === '1'){
+            btn.dataset.sel = '0';
+            btn.style.background = '#e9f7ef';
+            updateSelection(-1);
+          } else {
+            if (selected >= available){ return; }
+            btn.dataset.sel = '1';
+            btn.style.background = '#cfe2ff';
+            updateSelection(1);
+          }
+        });
+      }
+
+      seatGrid.appendChild(btn);
+      if ((i+1) % cols === 0){
+        const br = document.createElement('div');
+        br.style.flexBasis = '100%';
+        seatGrid.appendChild(br);
+      }
+    }
+
+    // Keep input and clicks in sync
+    seatsInput.addEventListener('input', () => {
+      let val = parseInt(seatsInput.value || '0', 10);
+      if (isNaN(val) || val < 0) val = 0;
+      if (val > available) val = available;
+      // adjust visual to roughly match selection count
+      const clickable = Array.from(seatGrid.querySelectorAll('button.seat:not([disabled])'));
+      let current = clickable.filter(b => b.dataset.sel === '1').length;
+      if (val > current){
+        for (const b of clickable){
+          if (b.dataset.sel !== '1'){ b.dataset.sel='1'; b.style.background='#cfe2ff'; current++; if (current>=val) break; }
+        }
+      } else if (val < current){
+        for (const b of clickable.reverse()){
+          if (b.dataset.sel === '1'){ b.dataset.sel='0'; b.style.background='#e9f7ef'; current--; if (current<=val) break; }
+        }
+      }
+      selected = val;
+    });
+  })();
+</script>
+{% endblock %}

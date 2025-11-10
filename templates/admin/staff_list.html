@@ -1,0 +1,43 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">Manage Staff</h2>
+<div class="mb-3"><a class="btn btn-success" href="{{ url_for('staff_admin.staff_add_get') }}">Add Staff</a></div>
+{% if items %}
+  <div class="table-responsive">
+    <table class="table table-striped align-middle">
+      <thead>
+        <tr>
+          <th>Name</th>
+          <th>Role</th>
+          <th>Theatre</th>
+          <th>City</th>
+          <th>Contact</th>
+          <th>Salary</th>
+          <th></th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for s in items %}
+          <tr>
+            <td>{{ s.name }}</td>
+            <td>{{ s.role }}</td>
+            <td>{{ s.theatre_name }}</td>
+            <td>{{ s.city }}</td>
+            <td>{{ s.contact_no or '-' }}</td>
+            <td>₹ {{ '%.2f'|format(s.salary) }}</td>
+            <td class="text-nowrap">
+              <a class="btn btn-sm btn-primary" href="{{ url_for('staff_admin.staff_edit_get', staff_id=s.staff_id) }}">Edit</a>
+              <form class="d-inline" method="post" action="{{ url_for('staff_admin.staff_delete', staff_id=s.staff_id) }}" onsubmit="return confirm('Delete this staff?')">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                <button class="btn btn-sm btn-outline-danger" type="submit">Delete</button>
+              </form>
+            </td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+{% else %}
+  <div class="alert alert-info">No staff found.</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,99 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual Environment
+.venv/
+venv/
+ENV/
+env/
+.env
+
+# Database
+*.db
+*.sqlite3
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+Thumbs.db
+
+# Node.js (Frontend)
+frontend-main/node_modules/
+frontend-main/.next/
+frontend-main/out/
+frontend-main/build/
+frontend-main/dist/
+frontend-main/.env.local
+frontend-main/.env.development.local
+frontend-main/.env.test.local
+frontend-main/.env.production.local
+frontend-main/npm-debug.log*
+frontend-main/yarn-debug.log*
+frontend-main/yarn-error.log*
+
+# Logs
+*.log
+logs/
+
+# Runtime data
+pids/
+*.pid
+*.seed
+*.pid.lock
+
+# Coverage directory used by tools like istanbul
+coverage/
+*.lcov
+
+# Temporary files
+*.tmp
+*.temp
+
+# Test files (keep the important ones, ignore temporary test files)
+test_*.py
+*_test.py
+debug_*.py
+quick_*.py
+
+# Sensitive files (keep .env.sample but ignore .env)
+.env
+!env.sample
+
+# Cache
+.cache/
+.parcel-cache/
+
+# Build outputs
+*.tgz
+*.tar.gz

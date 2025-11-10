@@ -1,0 +1,32 @@
+{% extends 'base.html' %}
+{% block content %}
+<h2 class="mb-3">Edit Customer</h2>
+<form method="post" class="row g-3">
+  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+  <div class="col-md-6">
+    <label class="form-label">Name</label>
+    <input type="text" name="name" class="form-control" value="{{ item.name }}" required>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Email</label>
+    <input type="email" class="form-control" value="{{ item.email }}" disabled>
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Contact No</label>
+    <input type="text" name="contact_no" class="form-control" value="{{ item.contact_no }}">
+  </div>
+  <div class="col-md-6">
+    <label class="form-label">Membership</label>
+    {% set ms = item.membership_status %}
+    <select name="membership_status" class="form-select">
+      <option value="none" {{ 'selected' if ms=='none' else '' }}>None</option>
+      <option value="silver" {{ 'selected' if ms=='silver' else '' }}>Silver</option>
+      <option value="gold" {{ 'selected' if ms=='gold' else '' }}>Gold</option>
+    </select>
+  </div>
+  <div class="col-12 d-flex gap-2">
+    <button class="btn btn-primary" type="submit">Save</button>
+    <a class="btn btn-outline-secondary" href="{{ url_for('customers_admin.customers_list') }}">Cancel</a>
+  </div>
+</form>
+{% endblock %}
